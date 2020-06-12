@@ -4,7 +4,7 @@ import sys
 from kafka import KafkaConsumer
 
 
-
+# 线程数组
 threads = []
 
 
@@ -30,12 +30,10 @@ def Consumer(thread_name, topic, partition):
     fetch_min_bytes（int） - 服务器为获取请求而返回的最小数据量，否则请等待
     fetch_max_wait_ms（int） - 如果没有足够的数据立即满足fetch_min_bytes给出的要求，服务器在回应提取请求之前将阻塞的最大时间量（以毫秒为单位）
     fetch_max_bytes（int） - 服务器应为获取请求返回的最大数据量。这不是绝对最大值，如果获取的第一个非空分区中的第一条消息大于此值，
-                则仍将返回消息以确保消费者可以取得进展。注意：使用者并行执行对多个代理的提取，因此内存使用将取决于包含该主题分区的代理的数量。
-                支持的Kafka版本> = 0.10.1.0。默认值：52428800（50 MB）。
+                则仍将返回消息以确保消费者可以取得进展。默认值：52428800（50 MB）。
     enable_auto_commit（bool） - 如果为True，则消费者的偏移量将在后台定期提交。默认值：True。
     max_poll_records（int） - 单次调用中返回的最大记录数poll()。默认值：500
-    max_poll_interval_ms（int） - poll()使用使用者组管理时的调用之间的最大延迟 。这为消费者在获取更多记录之前可以闲置的时间量设置了上限。
-                  如果 poll()在此超时到期之前未调用，则认为使用者失败，并且该组将重新平衡以便将分区重新分配给另一个成员。默认300000
+    max_poll_interval_ms（int） - poll()使用使用者组管理时的调用之间的最大延迟 。
     '''
     # 构建kafka消费者
     consumer = KafkaConsumer(bootstrap_servers=broker_list,
@@ -50,9 +48,8 @@ def Consumer(thread_name, topic, partition):
                              )
     print("program first run \t Thread:", thread_name, "分区:", partition, "\t开始消费...")
     num = 0  # 记录该消费者消费次数
-    # end_offset = consumer.end_offsets([tp])[tp]
-    # print(end_offset)
     while True:
+        # 手动拉取消息避免性能瓶颈
         msg = consumer.poll(timeout_ms=60000)
         end_offset = consumer.end_offsets(partition)
         if len(msg) > 0:
