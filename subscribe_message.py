@@ -12,7 +12,6 @@ class MyThread(threading.Thread):
     def __init__(self, thread_name, topic, partition):
         threading.Thread.__init__(self)
         self.thread_name = thread_name
-        # self.keyName = keyName
         self.partition = partition
         self.topic = topic
 
