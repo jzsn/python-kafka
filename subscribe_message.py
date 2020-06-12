@@ -53,7 +53,7 @@ def Consumer(thread_name, topic, partition):
         msg = consumer.poll(timeout_ms=60000)
         end_offset = consumer.end_offsets(partition)
         if len(msg) > 0:
-            print("线程:", thread_name, "分区:", partition, "最大偏移量:", end_offset, "有无数据,", len(msg))
+            print("thread:", thread_name, "partition:", partition, "end offset:", end_offset, "count,", len(msg))
             lines = 0
             for data in msg.values():
                 for line in data:
@@ -65,9 +65,9 @@ def Consumer(thread_name, topic, partition):
             # 线程此批次消息条数
             print(thread_name, "lines", lines)
         else:
-            print(thread_name, '没有数据')
+            print(thread_name, 'no data')
         num += 1
-        print(thread_name, "第", num, "次")
+        print(thread_name, "execute\t", num, "\t time ")
 
 
 if __name__ == '__main__':
